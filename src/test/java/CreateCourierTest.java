@@ -64,4 +64,22 @@ public class CreateCourierTest extends BaseApiTest {
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
 
+    @Test
+    @DisplayName("Создание курьера без имени")
+    @Description("Курьер успешно создаётся, если поле firstName не передано")
+    public void createCourierWithoutFirstNameSuccess() {
+
+        CourierModel courier = new CourierModel(
+                LOGIN + System.currentTimeMillis(),
+                PASSWORD,
+                null
+        );
+
+        createCourier(courier)
+                .then()
+                .log().all()
+                .statusCode(HTTP_CREATED)
+                .body("ok", equalTo(true));
+    }
+
 }
