@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import model.OrderModel;
 
 import static data.CourierData.CREATE_ORDER_PATH;
+import static data.CourierData.GET_ORDERS_PATH;
 import static io.restassured.RestAssured.given;
 
 public class OrderSteps {
@@ -18,5 +19,14 @@ public class OrderSteps {
                 .post(CREATE_ORDER_PATH)
                 .then()
                 .extract().response();
+    }
+    public static Response getOrders() {
+        return given()
+                .log().all()
+                .when()
+                .get(GET_ORDERS_PATH)
+                .then()
+                .extract()
+                .response();
     }
 }
