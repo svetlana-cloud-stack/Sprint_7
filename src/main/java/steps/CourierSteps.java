@@ -32,4 +32,13 @@ public class CourierSteps {
                 .then()
                 .extract().response();
     }
+    public static Response deleteCourier(int courierId) {
+        return given()
+                .log().all()
+                .when()
+                .delete(CREATE_COURIER_PATH + courierId)
+                .then()
+                .extract().response();
+    }
+
 }

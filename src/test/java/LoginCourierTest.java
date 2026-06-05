@@ -20,6 +20,9 @@ public class LoginCourierTest extends BaseApiTest {
         String login = LOGIN + System.currentTimeMillis();
 
         CourierModel courier = new CourierModel(login, PASSWORD, FIRSTNAME);
+
+        courierForDelete = courier;
+
         createCourier(courier);
 
         CourierCredentials credentials = new CourierCredentials(login, PASSWORD);
@@ -81,6 +84,9 @@ public class LoginCourierTest extends BaseApiTest {
         String login = LOGIN + System.currentTimeMillis();
 
         CourierModel courier = new CourierModel(login, PASSWORD, FIRSTNAME);
+
+        courierForDelete = courier;
+
         createCourier(courier);
 
         CourierCredentials credentials = new CourierCredentials(login, PASSWORD + "wrong");

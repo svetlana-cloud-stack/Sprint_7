@@ -16,6 +16,8 @@ public class CreateCourierTest extends BaseApiTest {
     public void createCourierSuccess() {
         CourierModel courier = new CourierModel(LOGIN + System.currentTimeMillis(), PASSWORD, FIRSTNAME);
 
+        courierForDelete = courier;
+
         createCourier(courier)
                 .then()
                 .log().all()
@@ -28,6 +30,8 @@ public class CreateCourierTest extends BaseApiTest {
     @Description("При повторном создании курьера с тем же логином возвращается ошибка")
     public void createDuplicateCourierReturnsError() {
         CourierModel courier = new CourierModel(LOGIN + System.currentTimeMillis(), PASSWORD, FIRSTNAME);
+
+        courierForDelete = courier;
 
         createCourier(courier);
 
@@ -74,6 +78,8 @@ public class CreateCourierTest extends BaseApiTest {
                 PASSWORD,
                 null
         );
+
+        courierForDelete = courier;
 
         createCourier(courier)
                 .then()
