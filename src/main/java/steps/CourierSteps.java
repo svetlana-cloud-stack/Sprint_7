@@ -1,5 +1,6 @@
 package steps;
 
+import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import model.CourierModel;
@@ -9,8 +10,12 @@ import static io.restassured.RestAssured.given;
 import model.CourierCredentials;
 import static data.CourierData.LOGIN_COURIER_PATH;
 
+
+
+
 public class CourierSteps {
 
+    @Step("Создать курьера")
     public static Response createCourier(CourierModel courier) {
         return given()
                 .log().all()
@@ -22,6 +27,7 @@ public class CourierSteps {
                 .extract().response();
     }
 
+    @Step("Авторизовать курьера")
     public static Response loginCourier(CourierCredentials credentials) {
         return given()
                 .log().all()
@@ -32,6 +38,8 @@ public class CourierSteps {
                 .then()
                 .extract().response();
     }
+
+    @Step("Удалить курьера")
     public static Response deleteCourier(int courierId) {
         return given()
                 .log().all()

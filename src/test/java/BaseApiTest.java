@@ -19,22 +19,4 @@ public class BaseApiTest {
     public static void setup() {
         RestAssured.baseURI = BASE_URI;
     }
-
-    @After
-    public void cleanUp() {
-        if (courierForDelete != null) {
-
-            CourierCredentials credentials = new CourierCredentials(
-                    courierForDelete.getLogin(),
-                    courierForDelete.getPassword()
-            );
-
-            Response response = loginCourier(credentials);
-
-            if (response.statusCode() == HTTP_OK) {
-                int courierId = response.path("id");
-                deleteCourier(courierId);
-            }
-        }
-    }
 }

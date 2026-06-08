@@ -3,7 +3,10 @@ import io.qameta.allure.junit4.DisplayName;
 import model.CourierCredentials;
 import model.CourierModel;
 import org.junit.Test;
-
+import org.junit.Before;
+import org.junit.After;
+import io.restassured.response.Response;
+import static steps.CourierSteps.deleteCourier;
 import static data.CourierData.*;
 import static java.net.HttpURLConnection.*;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -13,19 +16,35 @@ import static steps.CourierSteps.loginCourier;
 
 public class LoginCourierTest extends BaseApiTest {
 
+        private CourierModel courier;
+        private CourierCredentials credentials;
+
+        @Before
+        public void createCourierBeforeTest() {
+            String login = LOGIN + System.currentTimeMillis();
+
+            courier = new CourierModel(login, PASSWORD, FIRSTNAME);
+            createCourier(courier);
+
+            credentials = new CourierCredentials(login, PASSWORD);
+        }
+
+    @After
+    public void cleanUp() {
+        if (credentials != null) {
+            Response response = loginCourier(credentials);
+
+            if (response.statusCode() == HTTP_OK) {
+                int courierId = response.path("id");
+                deleteCourier(courierId);
+            }
+        }
+    }
+
     @Test
     @DisplayName("Успешная авторизация курьера")
     @Description("Проверка, что курьер может авторизоваться с корректными логином и паролем. В ответе возвращается id")
     public void loginCourierSuccess() {
-        String login = LOGIN + System.currentTimeMillis();
-
-        CourierModel courier = new CourierModel(login, PASSWORD, FIRSTNAME);
-
-        courierForDelete = courier;
-
-        createCourier(courier);
-
-        CourierCredentials credentials = new CourierCredentials(login, PASSWORD);
 
         loginCourier(credentials)
                 .then()
@@ -37,9 +56,9 @@ public class LoginCourierTest extends BaseApiTest {
     @DisplayName("Нельзя авторизоваться без логина")
     @Description("Если не передать логин, возвращается ошибка")
     public void loginCourierWithoutLoginReturnsError() {
-        CourierCredentials credentials = new CourierCredentials(null, PASSWORD);
+        CourierCredentials credentialsWithoutLogin = new CourierCredentials(null, PASSWORD);
 
-        loginCourier(credentials)
+        loginCourier(credentialsWithoutLogin)
                 .then()
                 .log().all()
                 .statusCode(HTTP_BAD_REQUEST)
@@ -81,17 +100,11 @@ public class LoginCourierTest extends BaseApiTest {
     @DisplayName("Нельзя авторизоваться с неверной парой логин и пароль")
     @Description("Если передать существующий логин и неверный пароль, возвращается ошибка")
     public void loginCourierWithWrongCredentialsReturnsError() {
-        String login = LOGIN + System.currentTimeMillis();
 
-        CourierModel courier = new CourierModel(login, PASSWORD, FIRSTNAME);
+        CourierCredentials wrongCredentilas = new CourierCredentials( courier.getLogin(),
+                PASSWORD + "wrong");
 
-        courierForDelete = courier;
-
-        createCourier(courier);
-
-        CourierCredentials credentials = new CourierCredentials(login, PASSWORD + "wrong");
-
-        loginCourier(credentials)
+        loginCourier(wrongCredentilas)
                 .then()
                 .log().all()
                 .statusCode(HTTP_NOT_FOUND)
