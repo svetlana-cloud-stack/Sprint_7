@@ -5,9 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CourierModel {
+public class CourierCredentials {
     private String login;
     private String password;
-    private String firstName;
 }
-

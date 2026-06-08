@@ -16,6 +16,8 @@ public class CreateCourierTest extends BaseApiTest {
     public void createCourierSuccess() {
         CourierModel courier = new CourierModel(LOGIN + System.currentTimeMillis(), PASSWORD, FIRSTNAME);
 
+        courierForDelete = courier;
+
         createCourier(courier)
                 .then()
                 .log().all()
@@ -28,6 +30,8 @@ public class CreateCourierTest extends BaseApiTest {
     @Description("При повторном создании курьера с тем же логином возвращается ошибка")
     public void createDuplicateCourierReturnsError() {
         CourierModel courier = new CourierModel(LOGIN + System.currentTimeMillis(), PASSWORD, FIRSTNAME);
+
+        courierForDelete = courier;
 
         createCourier(courier);
 
@@ -62,6 +66,26 @@ public class CreateCourierTest extends BaseApiTest {
                 .log().all()
                 .statusCode(HTTP_BAD_REQUEST)
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
+    }
+
+    @Test
+    @DisplayName("Создание курьера без имени")
+    @Description("Курьер успешно создаётся, если поле firstName не передано")
+    public void createCourierWithoutFirstNameSuccess() {
+
+        CourierModel courier = new CourierModel(
+                LOGIN + System.currentTimeMillis(),
+                PASSWORD,
+                null
+        );
+
+        courierForDelete = courier;
+
+        createCourier(courier)
+                .then()
+                .log().all()
+                .statusCode(HTTP_CREATED)
+                .body("ok", equalTo(true));
     }
 
 }
